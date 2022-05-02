@@ -1,0 +1,114 @@
+// CONSTANTS
+
+var RADIUS = 500;
+
+var KEYS = {
+  "q": {content: "Q", color: "#dc0e0e", sound: "sounds/bubbles.mp3"},
+  "w": {content: "W", color: "#24a2a6", sound: "sounds/clay.mp3"},
+  "e": {content: "E", color: "#98d930", sound: "sounds/confetti.mp3"},
+  "r": {content: "R", color: "#db5be2", sound: "sounds/corona.mp3"},
+  "t": {content: "T", color: "#7ea456", sound: "sounds/dotted-spiral.mp3"},
+  "y": {content: "Y", color: "#5ca748", sound: "sounds/flash-1.mp3"},
+  "u": {content: "U", color: "#0db4c1", sound: "sounds/flash-2.mp3"},
+  "i": {content: "I", color: "#0f387b", sound: "sounds/flash-3.mp3"},
+  "o": {content: "O", color: "#aa9901", sound: "sounds/glimmer.mp3"},
+  "p": {content: "P", color: "#804d6c", sound: "sounds/moon.mp3"},
+  //"a": {content: "A", color: "#d879d9", sound: "sounds/pinwheel.mp3"},
+  "a": {content: "A", color: "#d879d9", sound: "sounds/a.wav"},
+  "s": {content: "S", color: "#219125", sound: "sounds/piston-1.mp3"},
+  "d": {content: "D", color: "#3cbb74", sound: "sounds/piston-2.mp3"},
+  "f": {content: "F", color: "#9a297c", sound: "sounds/piston-3.mp3"},
+  "g": {content: "G", color: "#0a74d3", sound: "sounds/prism-1.mp3"},
+  "h": {content: "H", color: "#6c24c2", sound: "sounds/prism-2.mp3"},
+  "j": {content: "J", color: "#f3e81c", sound: "sounds/prism-3.mp3"},
+  "k": {content: "K", color: "#1594a3", sound: "sounds/splits.mp3"},
+  "l": {content: "L", color: "#0ccc96", sound: "sounds/squiggle.mp3"},
+  "z": {content: "Z", color: "#3f24de", sound: "sounds/strike.mp3"},
+  "x": {content: "X", color: "#b76183", sound: "sounds/suspension.mp3"},
+  "c": {content: "C", color: "#417541", sound: "sounds/timer.mp3"},
+  "v": {content: "V", color: "#5e066d", sound: "sounds/ufo.mp3"},
+  "b": {content: "B", color: "#e336f5", sound: "sounds/veil.mp3"},
+  "n": {content: "N", color: "#92ae22", sound: "sounds/wipe.mp3"},
+  "m": {content: "M", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "0": {content: "0", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "1": {content: "1", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "2": {content: "2", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "3": {content: "3", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "4": {content: "4", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "5": {content: "5", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "6": {content: "6", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "7": {content: "7", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "8": {content: "8", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "9": {content: "9", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  ".": {content: ".", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  ",": {content: ",", color: "#ed377a", sound: "sounds/zig-zag.mp3"},
+  "space": {content: "_", color: "#ed377a", sound: "sounds/zig-zag.mp3"}
+};
+
+// VARIABLES
+
+var circles = [];
+
+// EVENTS
+
+function onKeyDown(event) {
+  var key = event.key;
+  var color = "#ffffff";
+  var outkey = key;
+  if (KEYS[key]) {
+    var soundPath = KEYS[key].sound;
+    color = KEYS[key].color;
+    playSoundFromPath(soundPath);
+    outkey = KEYS[key].content;
+    //addRandomCircle(color,KEYS[key].content);
+  }
+    addRandomCircle(color,outkey);
+}
+
+function onFrame(event) {
+  circles.forEach(function(element) {
+    element.fillColor.hue += 1.5;
+    element.scale(0.97);
+  });
+  removeInvisibleCircles();
+}
+
+// FUNCTIONS
+
+function addRandomCircle(color, incontent) {
+  //KATZ var circle = new Path.Circle(getRandomPointInView(), RADIUS);
+  var meow = getRandomPointInView();
+  var meow2 = getRandomPointInView();
+  var circle = new paper.PointText(getRandomPointInView());
+	circle.content= incontent;
+	circle.justification= 'center';
+	circle.fontSize= 500;
+  circle.fillColor = color;
+  circles.push(circle);
+}
+
+function getRandomPointInView() {
+  //var maxPoint = new Point(view.size.width, view.size.height);
+  var maxPoint = new Point(view.size.width-200, view.size.height-200); // KATZ
+  //return maxPoint * Point.random();
+  maxPoint *= Point.random();
+  return maxPoint + new Point(150,250); //KATZ 
+}
+
+function playSoundFromPath(path) {
+  new Howl({
+    urls: [path]
+  }).play();
+}
+
+function removeInvisibleCircles() {
+  if (circles.length > 0) {
+    if (circles[0].bounds.width < 1) {
+      /* If circle isn't colored black before removing, holding down
+      keys for a long time results in tiny dots that remain permanently
+      on the canvas */
+      circles[0].fillColor = "black";
+      circles.shift();
+    }
+  }
+}
